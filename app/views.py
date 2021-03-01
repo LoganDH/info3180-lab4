@@ -46,6 +46,22 @@ def upload():
     flash_errors(photoform)
     return render_template('upload.html', form=photoform)
 
+def get_uploaded_images():
+    rootdir = os.getcwd()
+    filenames = []
+    for subdir, dirs, files in os.walk(rootdir + '/uploads'):
+        for file in files:
+            filenames.append(file)
+    return filenames
+
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/files')
+def files():
+    filenames = get_uploaded_images()
+    return render_template('files.html', filenames=filenames)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
